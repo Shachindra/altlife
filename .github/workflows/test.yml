@@ -10,7 +10,7 @@ on:
       git_url:
         description: 'Test Repository'
         required: true
-        default: 'test-project-url'
+        default: 'https://github.com/example/test-project'
 
 jobs:
   test-action:

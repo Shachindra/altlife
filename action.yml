@@ -45,15 +45,25 @@ runs:
         GIT_URL: ${{ inputs.git_url }}
         TYPE: ${{ inputs.type }}
       run: |
-        RESPONSE=$(curl -X POST "https://65e0-14-195-142-82.ngrok-free.app/api/v1.0/deploy" \
-          -H "Content-Type: application/json" \
-          -d "{\"wallet_address\":\"$WALLET_ADDRESS\",\"git_url\":\"$GIT_URL\",\"type\":\"$TYPE\"}" \
-          -s)
+        RESPONSE=$(curl -X POST "https://65e0-14-195-142-82.ngrok-free.app/api/v1.0/deploy" -H "Content-Type: application/json" -d "{\"wallet_address\":\"$WALLET_ADDRESS\",\"git_url\":\"$GIT_URL\",\"type\":\"$TYPE\"}" -s)
         
-        RESULT=$(echo "$RESPONSE" | jq -r '.result')
+        # RESPONSE=$(curl -X POST "https://65e0-14-195-142-82.ngrok-free.app/api/v1.0/deploy" \
+        #   -H "Content-Type: application/json" \
+        #   -d "$(jq -n \
+        #   --arg wallet "$WALLET_ADDRESS" \
+        #   --arg git "$GIT_URL" \
+        #   --arg type "$TYPE" \
+        #   '{wallet_address: $wallet, git_url: $git, type: $type}')" \
+        #   -s)
+
+        # Debug: Print raw response
+        echo "Raw Response: $RESPONSE"
+
+        RESULT=$(echo "$RESPONSE" | jq -r '.result // empty')
         
         if [ -z "$RESULT" ] || [ "$RESULT" == "null" ]; then
           echo "Error: Failed to retrieve result"
+          echo "Full Response: $RESPONSE"
           exit 1
         fi
         
