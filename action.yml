@@ -45,7 +45,7 @@ runs:
         GIT_URL: ${{ inputs.git_url }}
         TYPE: ${{ inputs.type }}
       run: |
-        RESPONSE=$(curl -X POST "https://altlife.stellarinnovators.com/api/v1.0/deploy" \
+        RESPONSE=$(curl -X POST "https://65e0-14-195-142-82.ngrok-free.app/api/v1.0/deploy" \
           -H "Content-Type: application/json" \
           -d "{\"wallet_address\":\"$WALLET_ADDRESS\",\"git_url\":\"$GIT_URL\",\"type\":\"$TYPE\"}" \
           -s)
