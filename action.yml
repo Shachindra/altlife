@@ -1,0 +1,61 @@
+# action.yml
+name: 'Alt Life'
+description: 'Second chance for impact driven projects'
+branding:
+  icon: 'hash'
+  color: 'blue'
+
+inputs:
+  wallet_address:
+    description: 'Your ETH wallet address'
+    required: true
+  git_url:
+    description: 'GIT URL for the Open Source Codebase'
+    required: true
+  type:
+    description: 'type of codebase (generic, static, react)'
+    required: false
+    default: 'generic'
+
+outputs:
+  result:
+    description: 'Alt Life Status'
+    value: ${{ steps.altlife.outputs.result }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate Inputs
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.wallet_address }}" ]; then
+          echo "Error: Your Wallet Address input is required"
+          exit 1
+        fi
+        if [ -z "${{ inputs.git_url }}" ]; then
+          echo "Error: Git Codebase URL is required"
+          exit 1
+        fi
+
+    - name: Give code/apps a second life
+      id: altlife
+      shell: bash
+      env:
+        WALLET_ADDRESS: ${{ inputs.wallet_address }}
+        GIT_URL: ${{ inputs.git_url }}
+        TYPE: ${{ inputs.type }}
+      run: |
+        RESPONSE=$(curl -X POST "https://altlife.stellarinnovators.com/api/v1.0/deploy" \
+          -H "Content-Type: application/json" \
+          -d "{\"wallet_address\":\"$WALLET_ADDRESS\",\"git_url\":\"$GIT_URL\",\"type\":\"$TYPE\"}" \
+          -s)
+        
+        RESULT=$(echo "$RESPONSE" | jq -r '.result')
+        
+        if [ -z "$RESULT" ] || [ "$RESULT" == "null" ]; then
+          echo "Error: Failed to retrieve result"
+          exit 1
+        fi
+        
+        echo "result=$RESULT" >> $GITHUB_OUTPUT
+        echo "Result retrieved successfully"
