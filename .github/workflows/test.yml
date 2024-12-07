@@ -1,0 +1,31 @@
+name: Simple Alt Life Action Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      wallet_address:
+        description: 'Test Wallet Address'
+        required: true
+        default: '0x1234567890123456789012345678901234567890'
+      git_url:
+        description: 'Test Repository'
+        required: true
+        default: 'https://github.com/example/test-project'
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Run Alt Life Action
+        uses: ./
+        id: alt-life-test
+        with:
+          wallet_address: ${{ github.event.inputs.wallet_address }}
+          git_url: ${{ github.event.inputs.git_url }}
+      
+      - name: Display Result
+        run: echo "Action Result: ${{ steps.alt-life-test.outputs.result }}"
