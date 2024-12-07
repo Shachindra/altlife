@@ -22,10 +22,12 @@ jobs:
       
       - name: Run Alt Life Action
         uses: ./
-        id: alt-life-test
+        id: alt_life_test
         with:
           wallet_address: ${{ github.event.inputs.wallet_address }}
           git_url: ${{ github.event.inputs.git_url }}
       
       - name: Display Result
-        run: echo "Action Result: ${{ steps.alt-life-test.outputs.result }}"
+        run: |
+          echo "## Alt Life Action Result" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.alt_life_test.outputs.result }}" >> $GITHUB_STEP_SUMMARY
