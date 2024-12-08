@@ -80,11 +80,25 @@ func deploy(c *gin.Context) {
 	// Get lines from the end
 	suiObjId := getLineFromEnd(lines, 4)
 	blobId := getLineFromEnd(lines, 5)
+	siteUrl := ""
 
 	fmt.Println(userWalletAddr)
 	fmt.Println(codeType)
 	fmt.Println("Sui Object Id:", suiObjId)
 	fmt.Println("Blob Id:", blobId)
+
+	if codeType == "static" {
+		cmd := exec.Command("/usr/local/bin/site-builder", "publish", "./deployments")
+		cmd.Dir = "/Users/shachindra/Projects/Hackathon/sui/walrus/walrus-sites"
+
+		stdout, err = cmd.Output()
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		lines = strings.Split(string(stdout), "\n")
+		siteUrl = getLineFromEnd(lines, 1)
+	}
 
 	os.RemoveAll("./deployments/")
 	os.MkdirAll("./deployments/", os.ModePerm)
@@ -92,7 +106,7 @@ func deploy(c *gin.Context) {
 
 	status := types.ApiResponse{
 		Status: 200,
-		Result: suiObjId + ", " + blobId,
+		Result: suiObjId + ", " + blobId + ", " + siteUrl,
 		// Result: userWalletAddr.String() + ", " + gitUrl + ", " + codeType,
 	}
 	c.JSON(200, status)

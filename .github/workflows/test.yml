@@ -10,7 +10,11 @@ on:
       git_url:
         description: 'Test Repository'
         required: true
-        default: 'https://github.com/example/test-project'
+        default: 'https://github.com/shachindra/webvideo'
+      type:
+        description: 'Type of Codebase'
+        required: true
+        default: 'static'
 
 jobs:
   test-action:
